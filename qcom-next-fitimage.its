@@ -73,6 +73,10 @@
 			data = /incbin/("./arch/arm64/boot/dts/qcom/purwa-iot-evk.dtb");
 			type = "flat_dt";
 		};
+		fdt-glymur-crd.dtb {
+			data = /incbin/("./arch/arm64/boot/dts/qcom/glymur-crd.dtb");
+			type = "flat_dt";
+		};
 		fdt-lemans-evk-camx.dtbo {
 			data = /incbin/("./arch/arm64/boot/dts/qcom/lemans-evk-camx.dtbo");
 			type = "flat_dt";
@@ -224,25 +228,29 @@
 			compatible = "qcom,sa8775p-qam-camx-el2kvm";
 			fdt = "fdt-sa8775p-ride-r3.dtb", "fdt-sa8775p-ride-camx.dtbo", "fdt-lemans-el2.dtbo";
 		};
-		conf-31 {
+		conf-32 {
 			compatible = "qcom,sa8775p-qam-r1.0-camx-el2kvm";
 			fdt = "fdt-sa8775p-ride.dtb", "fdt-sa8775p-ride-camx.dtbo", "fdt-lemans-el2.dtbo";
 		};
-		conf-32 {
+		conf-33 {
 			compatible = "qcom,qcs8300-adp-el2kvm";
 			fdt = "fdt-qcs8300-ride.dtb", "fdt-monaco-el2.dtbo";
 		};
-		conf-33 {
+		conf-34 {
 			compatible = "qcom,qcs8275-iot-el2kvm";
 			fdt = "fdt-monaco-evk.dtb", "fdt-monaco-el2.dtbo";
 		};
-		conf-34 {
+		conf-35 {
 			compatible = "qcom,qcs8275-iot-camx-el2kvm";
 			fdt = "fdt-monaco-evk.dtb", "fdt-monaco-evk-camx.dtbo", "fdt-monaco-el2.dtbo";
 		};
-		conf-35 {
+		conf-36 {
 			compatible = "qcom,qcs8300-adp-camx-el2kvm";
 			fdt = "fdt-qcs8300-ride.dtb", "fdt-qcs8300-ride-camx.dtbo", "fdt-monaco-el2.dtbo";
+		};
+		conf-37 {
+			compatible = "qcom,glymur-crd";
+			fdt = "fdt-glymur-crd.dtb";
 		};
 	};
 };
