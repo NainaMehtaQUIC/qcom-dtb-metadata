@@ -164,6 +164,11 @@ awk -v out="$tmpdir/valid_images.txt" '
         
         # 3. Trim leading whitespace
         sub(/^[[:space:]]+/, "", line)
+
+		#4. Extract image node names to exclude kernel, ramdisk, and setup entries
+		if (line != "" && line !~ /^(kernel|ramdisk|setup)/) {
+             print line >> out
+        }
 		
     }
 ' "$ITS_FILE"
