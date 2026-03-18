@@ -11,9 +11,7 @@ set -euo pipefail
 #
 # LOGIC FLOW:
 #   1. VALIDATION: Checks if input files exist.
-#   2. PARSE IMAGES: Extracts node names from '/images' and validates that
-#      referenced files (via /incbin/) actually exist on disk.
-#   3. PARSE CONFIGS: Extracts 'compatible' strings and 'fdt' lists from
+#   2. PARSE CONFIGS: Extracts 'compatible' strings and 'fdt' lists from
 #      '/configurations', handling multi-file and comma-quoted entries.
 #   4. METADATA CHECK: Verifies 'compatible' strings against the metadata file.
 #      - Applies a whitelist (BLACKLIST_SKIP_PATTERNS) for specific failures.
@@ -166,16 +164,7 @@ awk -v out="$tmpdir/valid_images.txt" '
         
         # 3. Trim leading whitespace
         sub(/^[[:space:]]+/, "", line)
-        
-        # 4. Ignore "data", "hash", "signature" subnodes if they appear with braces
-        # (Though usually these are properties or nested deeper, valid image nodes 
-        # usually start with fdt- or kernel-)
-        if (line != "" && line !~ /^(kernel|ramdisk|setup)/) {
-             print line >> out
-        }
-        
-        # Explicitly print kernel/fdt nodes if logic above filters too much
-        # Ideally, we just print everything that looks like a node name.
+		
     }
 ' "$ITS_FILE"
 
