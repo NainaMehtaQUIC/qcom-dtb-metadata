@@ -22,5 +22,5 @@ jobs:
       - name: Run FIT image metadata check
         run: ./check-fitimage-metadata.sh
 
-      - name: Run qcom next FIT image metadata check
+      - name: Run qcom next FIT image metadata & its check
         run: ./check-fitimage-metadata.sh qcom-next-fitimage.its qcom-metadata.dts
