@@ -214,7 +214,7 @@
 		};
 		conf-27 {
 			compatible = "qcom,qcs9075-iot-camx-el2kvm";
-			fdt = "fdt-lemans-evk.dtb", "fdt-lemans-evk-camx.dtbo", "fdt-lemans-el2.dtbo";
+			fdt = "fdt-lemans-evk.dtb", "fdt-lemans-evk-camx.dtbo", "fdt-lemans-el2.dtbo", "fdt-lemans-camx-el2.dtbo";
 		};
 		conf-28 {
 			compatible = "qcom,purwa-evk";
@@ -230,11 +230,11 @@
 		};
 		conf-31 {
 			compatible = "qcom,sa8775p-qam-camx-el2kvm";
-			fdt = "fdt-sa8775p-ride-r3.dtb", "fdt-sa8775p-ride-camx.dtbo", "fdt-lemans-el2.dtbo";
+			fdt = "fdt-sa8775p-ride-r3.dtb", "fdt-sa8775p-ride-camx.dtbo", "fdt-lemans-el2.dtbo", "fdt-lemans-camx-el2.dtbo";
 		};
 		conf-32 {
 			compatible = "qcom,sa8775p-qam-r1.0-camx-el2kvm";
-			fdt = "fdt-sa8775p-ride.dtb", "fdt-sa8775p-ride-camx.dtbo", "fdt-lemans-el2.dtbo";
+			fdt = "fdt-sa8775p-ride.dtb", "fdt-sa8775p-ride-camx.dtbo", "fdt-lemans-el2.dtbo", "fdt-lemans-camx-el2.dtbo";
 		};
 		conf-33 {
 			compatible = "qcom,qcs8300-adp-el2kvm";
