@@ -105,6 +105,10 @@
 			data = /incbin/("./arch/arm64/boot/dts/qcom/talos-el2.dtbo");
 			type = "flat_dt";
 		};
+		fdt-lemans-camx-el2.dtbo {
+			data = /incbin/("./arch/arm64/boot/dts/qcom/lemans-camx-el2.dtbo");
+			type = "flat_dt";
+		};
 	};
 
 	configurations {
