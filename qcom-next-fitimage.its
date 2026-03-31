@@ -109,6 +109,10 @@
 			data = /incbin/("./arch/arm64/boot/dts/qcom/lemans-camx-el2.dtbo");
 			type = "flat_dt";
 		};
+		fdt-hamoa-iot-evk-camera-imx577.dtbo {
+			data = /incbin/("./arch/arm64/boot/dts/qcom/hamoa-iot-evk-camera-imx577.dtbo");
+			type = "flat_dt";
+		};
 	};
 
 	configurations {
@@ -162,7 +166,7 @@
 		};
 		conf-13 {
 			compatible = "qcom,hamoa-evk";
-			fdt = "fdt-hamoa-iot-evk.dtb";
+			fdt = "fdt-hamoa-iot-evk.dtb", "fdt-hamoa-iot-evk-camera-imx577.dtbo";
 		};
 		conf-14 {
 			compatible = "qcom,qcs9075-iot-camx";
