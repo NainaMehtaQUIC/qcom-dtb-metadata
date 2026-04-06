@@ -117,6 +117,14 @@
 			data = /incbin/("./arch/arm64/boot/dts/qcom/monaco-camx-el2.dtbo");
 			type = "flat_dt";
 		};
+		fdt-kaanapali-mtp.dtb {
+			data = /incbin/("./arch/arm64/boot/dts/qcom/kaanapali-mtp.dtb");
+			type = "flat_dt";
+		};
+		fdt-kaanapali-qrd.dtb {
+			data = /incbin/("./arch/arm64/boot/dts/qcom/kaanapali-qrd.dtb");
+			type = "flat_dt";
+		};
 	};
 
 	configurations {
@@ -271,6 +279,14 @@
 		conf-38 {
 			compatible = "qcom,qcs615-adp-el2kvm";
 			fdt = "fdt-qcs615-ride.dtb", "fdt-talos-el2.dtbo";
+		};
+		conf-39 {
+			compatible = "qcom,kaanapali-mtp";
+			fdt = "fdt-kaanapali-mtp.dtb";
+		};
+		conf-40 {
+			compatible = "qcom,kaanapali-qrd";
+			fdt = "fdt-kaanapali-qrd.dtb";
 		};
 	};
 };
