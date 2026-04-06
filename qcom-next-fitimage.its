@@ -125,6 +125,14 @@
 			data = /incbin/("./arch/arm64/boot/dts/qcom/kaanapali-qrd.dtb");
 			type = "flat_dt";
 		};
+		fdt-sm8750-mtp.dtb {
+			data = /incbin/("./arch/arm64/boot/dts/qcom/sm8750-mtp.dtb");
+			type = "flat_dt";
+		};
+		fdt-sm8750-qrd.dtb {
+			data = /incbin/("./arch/arm64/boot/dts/qcom/sm8750-qrd.dtb");
+			type = "flat_dt";
+		};
 	};
 
 	configurations {
@@ -287,6 +295,13 @@
 		conf-40 {
 			compatible = "qcom,kaanapali-qrd";
 			fdt = "fdt-kaanapali-qrd.dtb";
+		conf-41 {
+			compatible = "qcom,sm8750-mtp";
+			fdt = "fdt-sm8750-mtp.dtb";
+		};
+		conf-42 {
+			compatible = "qcom,sm8750-qrd";
+			fdt = "fdt-sm8750-qrd.dtb";
 		};
 	};
 };
