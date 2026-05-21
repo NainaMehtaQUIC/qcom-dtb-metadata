@@ -109,6 +109,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 DTB_BIN_SIZE=4         # Default FAT image size (MB)
 DTB_BIN="dtb.bin"      # Default output image filename
+PRUNE=0                # Prune ITS entries whose DTB/DTBO is absent from source
 
 DTB_SRC=""             # DTB source directory (resolved; required via one mode)
 
@@ -141,6 +142,10 @@ Usage: $0 (--kernel-deb <kernel.deb> | --dtb-src <path>) [--size <MB>] [--out <f
   --size,      -size         FAT image size in MB (default: 4)
 
   --out,       -out          Output image filename (default: dtb.bin)
+
+  --prune,     -prune        Prune ITS entries of dtb(o) based on kernel provided.
+                             dtb.bin is created from reduced its file. there is
+                             risk of missing dtb(o) due to kernel and finding it out during boot.
 
 Notes:
   - Exactly one of --kernel-deb or --dtb-src must be provided.
@@ -197,6 +202,10 @@ while [[ $# -gt 0 ]]; do
         -out|--out)
             DTB_BIN="${2:-}"
             shift 2
+            ;;
+        -prune|--prune)
+            PRUNE=1
+            shift 1
             ;;
         -h|--help)
             usage
@@ -363,6 +372,71 @@ ls -lh "${FIT_STAGE}/qcom-metadata.dtb"
 # -----------------------------------------------------------------------
 cp "${SCRIPT_DIR}/${DEFAULT_ITS_FILE}" "${FIT_STAGE}/${DEFAULT_ITS_FILE}"
 
+# -----------------------------------------------------------------------
+# Step 3b. Prune ITS (only when --prune is given)
+#
+# For every image entry whose /incbin/ DTB/DTBO is absent from the staged
+# source, the entry is dropped.  Any configuration referencing a dropped
+# label is also dropped.  The staged ITS is overwritten in-place so that
+# Step 4 (mkimage) sees the reduced file.
+# -----------------------------------------------------------------------
+if (( PRUNE )); then
+    echo "[INFO] --prune: rewriting ITS to include only DTBs present in source..."
+
+    _pruned_its="${FIT_STAGE}/${DEFAULT_ITS_FILE}.pruned"
+
+    # Two-file awk: first input = available DTB basenames (via find); second = ITS.
+    # NR==FNR processes the first file to build avail_dtbs[]; the rest rewrites the ITS.
+    awk '
+NR == FNR { avail_dtbs[$1] = 1; next }
+BEGIN { avail_labels["fdt-qcom-metadata.dtb"] = 1
+        in_block=0; skip_block=0; is_conf=0; buf=""; cur_label="" }
+/^\t\tfdt-[^ ]+ \{$/ {
+    in_block=1; is_conf=0; skip_block=0; cur_label=$1; buf=$0"\n"; next }
+/^\t\tconf-[0-9]+ \{$/ {
+    in_block=1; is_conf=1; skip_block=0; buf=$0"\n"; next }
+in_block {
+    buf=buf $0"\n"
+    if (!is_conf && /\/incbin\//) {
+        if (!(cur_label in avail_labels)) {
+            split($0,q,"\""); n=split(q[2],p,"/"); dtb=p[n]
+            if (dtb in avail_dtbs) avail_labels[cur_label]=1
+            else { skip_block=1; print "[WARN] --prune: dropped: "dtb >"/dev/stderr" }
+        }
+    }
+    if (is_conf && /fdt =/) {
+        tmp=$0
+        while (match(tmp,/"fdt-[^"]+"/)>0) {
+            ref=substr(tmp,RSTART+1,RLENGTH-2)
+            if (!(ref in avail_labels)) skip_block=1
+            tmp=substr(tmp,RSTART+RLENGTH)
+        }
+    }
+    if (/^\t\t\};$/) {
+        if (!skip_block) printf "%s",buf
+        in_block=0; buf=""; skip_block=0; is_conf=0; cur_label=""
+    }
+    next
+}
+{ print }
+' <(find "${DTB_STAGE}" -maxdepth 1 \( -name "*.dtb" -o -name "*.dtbo" \) -type f \
+      -exec basename {} \;) \
+  "${FIT_STAGE}/${DEFAULT_ITS_FILE}" > "${_pruned_its}"
+
+    if ! grep -q 'conf-[0-9]' "${_pruned_its}"; then
+        echo "[ERROR] --prune: no configuration entries remain after pruning." >&2
+        echo "        Verify the source contains DTBs referenced by the ITS." >&2
+        exit 1
+    fi
+
+    mv "${_pruned_its}" "${FIT_STAGE}/${DEFAULT_ITS_FILE}"
+    echo "[INFO] --prune: ITS rewritten successfully."
+    echo "[INFO] Remaining ITS image entries:"
+    grep -P $'^\t\tfdt-' "${FIT_STAGE}/${DEFAULT_ITS_FILE}" | \
+        sed 's/^[[:space:]]*/        /' || true
+
+    unset _pruned_its
+fi
 # -----------------------------------------------------------------------
 # Step 4. Generate qclinux_fit.img via mkimage
 # -----------------------------------------------------------------------
